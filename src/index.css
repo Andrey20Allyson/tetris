@@ -1,0 +1,35 @@
+:root {
+  color: #ff0;
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+  font-weight: bold;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* flex-direction: column; */
+  background-color: #111;
+}
+
+.screen-row {
+  display: flex;
+  gap: .4rem;
+}
+
+canvas {
+  background-color: #222;
+  image-rendering: pixelated;
+  border: 8px inset #888888;
+}
+
+#screen {
+  height: 90vh;
+  --c: #b700ff;
+}
+
+#next-block {
+  width: 100px;
+  height: 100px;
+}
