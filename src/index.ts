@@ -1,6 +1,5 @@
 import 'reflect-metadata';
 import './index.css';
-import './test';
 
 let delta = 0;
 

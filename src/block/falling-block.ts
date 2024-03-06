@@ -1,10 +1,11 @@
 import { Vec2 } from "../base/vec";
+import { OnTick } from "../services/events/game-events.type";
 import { IGame } from "../services/game/game.type";
 import { BlockBody } from "./block-body";
 
 export type BlockMovement = 'left' | 'right';
 
-export class FallingBlock {
+export class FallingBlock implements OnTick {
   private _isFreezed: boolean = false;
   private _rotateTimes: number = 0;
   private _movementQueue: BlockMovement[] = [];
@@ -23,6 +24,30 @@ export class FallingBlock {
     this.pos = pos;
     this.body = new BlockBody(this, body);
     this.color = color;
+  }
+
+  onTick(delta: number) {
+    if (this._rotateTimes > 0) {
+      this._rotateTimes--;
+
+      this._rotate();
+    }
+
+    let movement = this._movementQueue.shift();
+    if (movement !== undefined) {
+      switch (movement) {
+        case "left":
+          this._move(-1);
+          break;
+        case "right":
+          this._move(1);
+          break;
+      }
+    }
+
+    if (delta % (this.fastFall ? 1 : 10) === 0) {
+      this.fall();
+    }
   }
 
   setBody(deltas: Vec2[]): this {
@@ -92,30 +117,6 @@ export class FallingBlock {
     if (this._isFreezed) return;
 
     this._isFreezed = true;
-  }
-
-  tick(delta: number) {
-    if (this._rotateTimes > 0) {
-      this._rotateTimes--;
-
-      this._rotate();
-    }
-
-    let movement = this._movementQueue.shift();
-    if (movement !== undefined) {
-      switch (movement) {
-        case "left":
-          this._move(-1);
-          break;
-        case "right":
-          this._move(1);
-          break;
-      }
-    }
-
-    if (delta % (this.fastFall ? 1 : 10) === 0) {
-      this.fall();
-    }
   }
 
   enqueueRotation(): this {

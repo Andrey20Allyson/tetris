@@ -7,7 +7,7 @@ export class RandomGameObjectFactory implements IGameObjectsFactory {
     readonly game: IGame,
   ) { }
 
-  ramdom(): IGameObjectsFactory {
+  random(): IGameObjectsFactory {
     return this;
   }
 
@@ -32,7 +32,7 @@ export class GameObjectFactory implements IGameObjectsFactory {
     this._random = new RandomGameObjectFactory(this.game);
   }
 
-  ramdom(): IGameObjectsFactory {
+  random(): IGameObjectsFactory {
     return this._random;
   }
 

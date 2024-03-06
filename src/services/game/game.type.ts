@@ -10,7 +10,7 @@ export interface CreateBlockOptions {
 }
 
 export interface IGameObjectsFactory {
-  ramdom(): IGameObjectsFactory;
+  random(): IGameObjectsFactory;
   block(options?: CreateBlockOptions): FallingBlock;
 }
 
@@ -18,6 +18,12 @@ export interface IGame {
   readonly add: IGameObjectsFactory;
 
   grid(): GameGrid;
+  getCurrentBlock(): FallingBlock;
+  getNextBlock(): FallingBlock;
+  isGameOver(): boolean;
+  start(): void;
+  pause(): void;
+  resume(): void;
 }
 
 export const GameType = serviceIdentifier<IGame>('IGame');
