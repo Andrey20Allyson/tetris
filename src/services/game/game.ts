@@ -24,7 +24,7 @@ export class Game implements IGame {
 
   constructor() {
     this.add = new GameObjectFactory(this);
-    this._grid = new GameGrid(32, 64);
+    this._grid = new GameGrid(16, 32);
   }
 
   start(): void {
@@ -35,7 +35,8 @@ export class Game implements IGame {
     this._currentBlock.set(this
       .add
       .random()
-      .block());
+      .block()
+      .asMain());
 
     this._nextBlock.set(this
       .add
@@ -89,7 +90,7 @@ export class Game implements IGame {
   }
 
   private _initTickTimer(): boolean {
-    if (this._clearTickTimer !== null) return false;
+    if (this._tickTimerRef !== null) return false;
 
     this._tickTimerRef = setInterval(() => this.tick(), 1000 / this._tickPerSecond);
 

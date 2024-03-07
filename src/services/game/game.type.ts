@@ -1,5 +1,6 @@
 import { Vec2 } from "../../base/vec";
 import { FallingBlock } from "../../block/falling-block";
+import { IGameEvents } from "../events/game-events.type";
 import { serviceIdentifier } from "../utils";
 import { GameGrid } from "./game-grid";
 
@@ -16,6 +17,7 @@ export interface IGameObjectsFactory {
 
 export interface IGame {
   readonly add: IGameObjectsFactory;
+  readonly events: IGameEvents;
 
   grid(): GameGrid;
   getCurrentBlock(): FallingBlock;

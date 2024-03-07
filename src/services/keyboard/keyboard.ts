@@ -11,6 +11,10 @@ export class KeyboardPublisher implements IKeyboardPublisher {
     document.addEventListener('keydown', ev => {
       this.keyDown(ev.code);
     });
+
+    document.addEventListener('keyup', ev => {
+      this.keyUp(ev.code);
+    });
   }
 
   keyDown(code: string): void {

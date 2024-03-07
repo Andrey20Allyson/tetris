@@ -1,16 +1,16 @@
 import { inject, injectable } from "inversify";
 import { GameEventsType, IGameEvents, OnPause, OnResume, OnStart } from "../events/game-events.type";
-import { serviceIdentifier } from "../utils";
+import { IFrameController } from "./frame-controller.type";
 
 @injectable()
-export class FrameController implements OnStart, OnPause, OnResume {
+export class FrameController implements IFrameController, OnStart, OnPause, OnResume {
   private _delta: number = 0;
   private _canRenderNextFrame: boolean = false;
 
-  @inject(GameEventsType)
-  readonly events!: IGameEvents;
-
-  constructor() {
+  constructor(
+    @inject(GameEventsType)
+    readonly events: IGameEvents,
+  ) {
     this.events.start.subscribe(this);
     this.events.pause.subscribe(this);
     this.events.resume.subscribe(this);
@@ -62,11 +62,3 @@ export class FrameController implements OnStart, OnPause, OnResume {
   }
 }
 
-export interface IFrameController {
-  start(): void;
-  pause(): void;
-  resume(): void;
-  frame(): void;
-}
-
-export const FrameControllerType = serviceIdentifier<IFrameController>('FrameController');

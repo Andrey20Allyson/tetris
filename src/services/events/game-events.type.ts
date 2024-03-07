@@ -44,6 +44,8 @@ export interface IGameEvents {
   readonly frame: EventPublisher<OnFrame, 'onFrame'>;
   readonly afterFrame: EventPublisher<OnAfterFrame, 'onAfterFrame'>;
   readonly beforeFrame: EventPublisher<OnBeforeFrame, 'onBeforeFrame'>;
+
+  unsubscribe(sub: any): IGameEvents;
 }
 
-export const GameEventsType = serviceIdentifier<IGameEvents>('IGameEvents')
+export const GameEventsType = serviceIdentifier<IGameEvents>('GameEvents')

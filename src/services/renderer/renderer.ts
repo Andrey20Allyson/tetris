@@ -8,9 +8,6 @@ import { GameScreenType, IGameScreen } from "./screen.type";
 
 @injectable()
 export class Renderer implements IRenderer, OnBeforeFrame, OnFrame {
-  @inject(GameEventsType)
-  readonly events!: IGameEvents;
-
   @inject(GameScreenType)
   readonly screen!: IGameScreen;
 
@@ -23,7 +20,13 @@ export class Renderer implements IRenderer, OnBeforeFrame, OnFrame {
   @inject(GameType)
   readonly game!: IGame;
 
-  constructor() { }
+  constructor(
+    @inject(GameEventsType)
+    readonly events: IGameEvents,
+  ) {
+    this.events.beforeFrame.subscribe(this);
+    this.events.frame.subscribe(this);
+  }
 
   get ctx() {
     return this.screen.context;
@@ -32,11 +35,11 @@ export class Renderer implements IRenderer, OnBeforeFrame, OnFrame {
   onBeforeFrame(): void {
     this.clearScreen();
   }
-  
+
   onFrame(): void {
     this.render();
   }
-  
+
   clearScreen(): void {
     this.ctx.clearRect(0, 0, this.screen.width, this.screen.height);
   }

@@ -1,12 +1,14 @@
+import { Unsubscriber, unsub } from "../base/event-pub";
 import { Vec2 } from "../base/vec";
-import { OnTick } from "../services/events/game-events.type";
+import { OnInput, OnTick } from "../services/events/game-events.type";
 import { IGame } from "../services/game/game.type";
 import { BlockBody } from "./block-body";
 
 export type BlockMovement = 'left' | 'right';
 
-export class FallingBlock implements OnTick {
+export class FallingBlock implements OnTick, OnInput {
   private _isFreezed: boolean = false;
+  private _isMain: boolean = false;
   private _rotateTimes: number = 0;
   private _movementQueue: BlockMovement[] = [];
 
@@ -26,7 +28,38 @@ export class FallingBlock implements OnTick {
     this.color = color;
   }
 
+  onKeyDown(code: string): void {
+    switch (code) {
+      case 'ArrowLeft':
+        this.enqueueMovement('left');
+        return;
+      case 'ArrowRight':
+        this.enqueueMovement('right');
+        return;
+      case 'ArrowDown':
+        this.fastFall = true;
+        return;
+      case 'ArrowUp':
+        this.enqueueRotation();
+        return;
+    }
+  }
+
+  onKeyUp(code: string): void {
+    console.log(code);
+
+    switch (code) {
+      case 'ArrowDown':
+        this.fastFall = false;
+        return;
+    }
+  }
+
   onTick(delta: number) {
+    this.tick(delta);
+  }
+
+  tick(delta: number) {
     if (this._rotateTimes > 0) {
       this._rotateTimes--;
 
@@ -48,6 +81,32 @@ export class FallingBlock implements OnTick {
     if (delta % (this.fastFall ? 1 : 10) === 0) {
       this.fall();
     }
+  }
+
+  asMain(): this {
+    if (this._isMain === true) return this;
+
+    this._isMain = true;
+
+    this
+      .game
+      .events
+      .tick
+      .subscribe(this);
+
+    this
+      .game
+      .events
+      .keyDown
+      .subscribe(this);
+
+    this
+      .game
+      .events
+      .keyUp
+      .subscribe(this);
+
+    return this;
   }
 
   setBody(deltas: Vec2[]): this {
@@ -117,6 +176,10 @@ export class FallingBlock implements OnTick {
     if (this._isFreezed) return;
 
     this._isFreezed = true;
+
+    unsub(this);
+
+    this._isMain = false;
   }
 
   enqueueRotation(): this {

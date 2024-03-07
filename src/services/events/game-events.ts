@@ -39,4 +39,16 @@ export class GameEvents implements IGameEvents {
   readonly keyUp = EventPublisher
     .for<OnInput>()
     .bind('onKeyUp');
+
+  unsubscribe(sub: any): IGameEvents {
+    Object
+      .values(this)
+      .forEach(value => {
+        if (value instanceof EventPublisher) {
+          value.unsubscribe(sub);
+        }
+      });
+
+    return this;
+  }
 }
