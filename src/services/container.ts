@@ -13,6 +13,9 @@ import { GameScreen } from "./renderer/screen";
 import { GameScreenType } from "./renderer/screen.type";
 import { FrameController } from "./renderer/frame-controller";
 import { FrameControllerType } from "./renderer/frame-controller.type";
+import { NextBlockScreenType } from "./renderer/next-block-screen.type";
+import { NextBlockScreen } from "./renderer/next-block-screen";
+import { NextBlockRenderer, NextBlockRendererType } from "./renderer/next-block-renderer";
 
 export const defaultContainer = new Container();
 
@@ -32,6 +35,11 @@ defaultContainer
   .inSingletonScope();
 
 defaultContainer
+  .bind(NextBlockScreenType)
+  .to(NextBlockScreen)
+  .inSingletonScope();
+
+defaultContainer
   .bind(FrameControllerType)
   .to(FrameController)
   .inSingletonScope();
@@ -43,6 +51,10 @@ defaultContainer
 defaultContainer
   .bind(BlockRendererType)
   .to(BlockRenderer);
+
+defaultContainer
+  .bind(NextBlockRendererType)
+  .to(NextBlockRenderer);
 
 defaultContainer
   .bind(KeyboardPublisherType)

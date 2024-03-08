@@ -1,13 +1,13 @@
 import { inject, injectable } from "inversify";
 import { Opt } from "../../base/opt";
 import { FallingBlock } from "../../block/falling-block";
-import { GameEventsType, IGameEvents } from "../events/game-events.type";
+import { GameEventsType, IGameEvents, OnBlockFreeze } from "../events/game-events.type";
 import { GameGrid } from "./game-grid";
 import { GameObjectFactory } from "./game-object-factory";
 import { IGame, IGameObjectsFactory } from "./game.type";
 
 @injectable()
-export class Game implements IGame {
+export class Game implements IGame, OnBlockFreeze {
   private _grid: GameGrid;
   private _isGameOver: boolean = false;
   private _currentBlock: Opt<FallingBlock> = Opt.none();
@@ -17,14 +17,18 @@ export class Game implements IGame {
   private _started: boolean = false;
   private _delta: number = 0;
 
-  @inject(GameEventsType)
-  readonly events!: IGameEvents;
-
   add: IGameObjectsFactory;
 
-  constructor() {
+  constructor(
+    @inject(GameEventsType) readonly events: IGameEvents,
+  ) {
     this.add = new GameObjectFactory(this);
-    this._grid = new GameGrid(16, 32);
+    this._grid = new GameGrid(this, 16, 32);
+
+    this
+      .events
+      .blockFreeze
+      .subscribe(this);
   }
 
   start(): void {
@@ -46,6 +50,18 @@ export class Game implements IGame {
     this._initTickTimer();
 
     this.events.start.publish();
+  }
+
+  onBlockFreeze(): void {
+    this._currentBlock.set(this
+      ._nextBlock
+      .unwrap()
+      .asMain());
+
+    this._nextBlock.set(this
+      .add
+      .random()
+      .block());
   }
 
   tick() {

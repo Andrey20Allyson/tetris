@@ -1,5 +1,7 @@
 import { serviceIdentifier } from "../utils";
 import { EventPublisher } from "../../base/event-pub";
+import { FallingBlock } from "../../block/falling-block";
+import { GameGrid } from "../game/game-grid";
 
 export interface OnTick {
   onTick(delta: number): void;
@@ -34,6 +36,22 @@ export interface OnAfterFrame {
   onAfterFrame(delta: number): void;
 }
 
+export interface OnBlockFreeze {
+  onBlockFreeze(block: FallingBlock): void;
+}
+
+export interface OnLineComplete {
+  onLineComplete(line: number, grid: GameGrid): void;
+}
+
+export interface OnLineRemoveAnimationEnd {
+  onLineRemoveAnimationEnd(line: number, grid: GameGrid): void;
+}
+
+export interface OnGameOver {
+  onGameOver(): void;
+}
+
 export interface IGameEvents {
   readonly tick: EventPublisher<OnTick, 'onTick'>;
   readonly keyDown: EventPublisher<OnInput, 'onKeyDown'>;
@@ -44,8 +62,10 @@ export interface IGameEvents {
   readonly frame: EventPublisher<OnFrame, 'onFrame'>;
   readonly afterFrame: EventPublisher<OnAfterFrame, 'onAfterFrame'>;
   readonly beforeFrame: EventPublisher<OnBeforeFrame, 'onBeforeFrame'>;
-
-  unsubscribe(sub: any): IGameEvents;
+  readonly blockFreeze: EventPublisher<OnBlockFreeze, 'onBlockFreeze'>;
+  readonly lineComplete: EventPublisher<OnLineComplete, 'onLineComplete'>;
+  readonly lineRemoveAnimationEnd: EventPublisher<OnLineRemoveAnimationEnd, 'onLineRemoveAnimationEnd'>;
+  readonly gameOver: EventPublisher<OnGameOver, 'onGameOver'>;
 }
 
 export const GameEventsType = serviceIdentifier<IGameEvents>('GameEvents')

@@ -1,10 +1,22 @@
+import { injectable } from "inversify";
 import { serviceIdentifier } from "../utils";
 
-export interface IGameScreen {
-  readonly width: number;
-  readonly height: number;
-  readonly canvas: HTMLCanvasElement;
-  readonly context: CanvasRenderingContext2D;
+@injectable()
+export abstract class IGameScreen {
+  abstract readonly canvas: HTMLCanvasElement;
+  abstract readonly context: CanvasRenderingContext2D;
+  
+  get width() {
+    return this.canvas.width;
+  }
+  
+  get height() {
+    return this.canvas.height;
+  }
+  
+  clear(): void {
+    this.context.clearRect(0, 0, this.width, this.height);
+  }
 }
 
 export const GameScreenType = serviceIdentifier<IGameScreen>('GameScreen');

@@ -1,4 +1,4 @@
-import { Unsubscriber, unsub } from "../base/event-pub";
+import { unsub } from "../base/event-pub";
 import { Vec2 } from "../base/vec";
 import { OnInput, OnTick } from "../services/events/game-events.type";
 import { IGame } from "../services/game/game.type";
@@ -46,8 +46,6 @@ export class FallingBlock implements OnTick, OnInput {
   }
 
   onKeyUp(code: string): void {
-    console.log(code);
-
     switch (code) {
       case 'ArrowDown':
         this.fastFall = false;
@@ -178,6 +176,12 @@ export class FallingBlock implements OnTick, OnInput {
     this._isFreezed = true;
 
     unsub(this);
+
+    this
+      .game
+      .events
+      .blockFreeze
+      .publish(this);
 
     this._isMain = false;
   }

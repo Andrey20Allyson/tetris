@@ -1,9 +1,39 @@
 import { injectable } from "inversify";
 import { EventPublisher } from "../../base/event-pub";
-import { IGameEvents, OnAfterFrame, OnBeforeFrame, OnFrame, OnInput, OnPause, OnResume, OnStart, OnTick } from "./game-events.type";
+import {
+  IGameEvents,
+  OnAfterFrame,
+  OnBeforeFrame,
+  OnBlockFreeze,
+  OnFrame,
+  OnGameOver,
+  OnInput,
+  OnLineComplete,
+  OnLineRemoveAnimationEnd,
+  OnPause,
+  OnResume,
+  OnStart,
+  OnTick,
+} from "./game-events.type";
 
 @injectable()
 export class GameEvents implements IGameEvents {
+  readonly blockFreeze = EventPublisher
+    .for<OnBlockFreeze>()
+    .bind('onBlockFreeze');
+
+  readonly lineComplete = EventPublisher
+    .for<OnLineComplete>()
+    .bind('onLineComplete');
+
+  readonly lineRemoveAnimationEnd = EventPublisher
+    .for<OnLineRemoveAnimationEnd>()
+    .bind('onLineRemoveAnimationEnd');
+
+  readonly gameOver = EventPublisher
+    .for<OnGameOver>()
+    .bind('onGameOver');
+
   readonly frame = EventPublisher
     .for<OnFrame>()
     .bind('onFrame');
@@ -39,16 +69,4 @@ export class GameEvents implements IGameEvents {
   readonly keyUp = EventPublisher
     .for<OnInput>()
     .bind('onKeyUp');
-
-  unsubscribe(sub: any): IGameEvents {
-    Object
-      .values(this)
-      .forEach(value => {
-        if (value instanceof EventPublisher) {
-          value.unsubscribe(sub);
-        }
-      });
-
-    return this;
-  }
 }
